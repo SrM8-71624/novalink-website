@@ -1,0 +1,1747 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>NovaLink — Ethereal Scientific Launchpad</title>
+  <meta name="color-scheme" content="dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Theme variables ---------- */
+    :root {
+      --bg: #0f1724;
+      --panel: rgba(14, 18, 32, 0.56);
+      --accent: #92B7FF;
+      --accent-2: #8ef0ff;
+      --muted: #b5c7d8;
+      --glass-border: rgba(146, 183, 255, 0.12);
+      --glass-shadow: 0 8px 40px rgba(3, 7, 18, 0.6);
+      --radius-xl: 18px;
+      --radius-lg: 12px;
+    }
+
+    /* ---------- Base reset ---------- */
+    * { box-sizing: border-box }
+    html, body { height: 100% }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      background:
+        radial-gradient(1200px 600px at 10% 10%, rgba(146, 183, 255, 0.02), transparent),
+        radial-gradient(900px 500px at 90% 90%, rgba(142, 240, 255, 0.01), transparent),
+        var(--bg);
+      color: #e6eef8;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+    }
+
+    /* ---------- Utility classes ---------- */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    .flex { display: flex }
+    .items-center { align-items: center }
+    .justify-between { justify-content: space-between }
+    .gap-4 { gap: 16px }
+    .text-center { text-align: center }
+    .hidden { display: none !important }
+    .rounded-xl { border-radius: var(--radius-xl) }
+    .p-4 { padding: 16px }
+    .p-6 { padding: 24px }
+    .mt-4 { margin-top: 16px }
+    .mb-2 { margin-bottom: 8px }
+    .w-full { width: 100% }
+    .max-w-4xl { max-width: 896px; }
+    .max-w-3xl { max-width: 760px }
+    .text-sm { font-size: 0.95rem }
+    .font-semibold { font-weight: 600 }
+    .muted { color: var(--muted) }
+    .sr-only { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0 }
+
+    /* ---------- Glass card ---------- */
+    .glass-card {
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+    }
+    .card-soft { background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)); border: 1px solid rgba(255, 255, 255, 0.03); padding: 12px; border-radius: 12px; }
+
+    /* ---------- Buttons ---------- */
+    .accent-button {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: var(--bg);
+      transition: transform .16s ease, box-shadow .16s ease, opacity .12s ease;
+      border-radius: 12px;
+      padding: .5rem .9rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .accent-button:disabled { opacity: .6; transform: none; cursor: not-allowed }
+    .accent-button:hover:not(:disabled) { transform: translateY(-4px); box-shadow: 0 8px 40px rgba(138, 200, 255, 0.12), 0 0 30px rgba(142, 240, 255, 0.06); }
+    
+    .icon-button {
+        padding: 8px;
+        background: rgba(14, 18, 32, 0.4);
+        border: 1px solid var(--glass-border);
+        color: var(--accent);
+    }
+    .icon-button:hover {
+        background: rgba(14, 18, 32, 0.7);
+    }
+
+    /* ---------- Headings & hero ---------- */
+    .section-heading {
+      display: inline-block;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      padding-left: 12px;
+      border-left: 4px solid var(--accent);
+      margin-bottom: 12px;
+    }
+    h1.big { font-size: clamp(28px, 6vw, 54px); line-height: 1; margin: 0; }
+
+    /* ---------- forms ---------- */
+    input[type="text"], input[type="email"], input[type="password"], select {
+      background: #0b1220; color: white; border: 1px solid #243044;
+      padding: 12px; border-radius: 10px; width: 100%;
+      font-size: 0.95rem;
+    }
+    input:focus-visible, button:focus-visible, a:focus-visible, [tabindex="0"]:focus-visible, select:focus-visible { outline: 3px solid rgba(146, 183, 255, 0.2); outline-offset: 2px; border-radius: 4px; }
+    
+    pre { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", monospace; font-size: 0.9rem; }
+
+    /* ---------- chat / floating ---------- */
+    #ai-mentor { position: fixed; bottom: 20px; right: 20px; padding: 12px; border-radius: 999px; z-index: 50; background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.02)); border: 1px solid var(--glass-border); box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6); cursor: pointer }
+    #chatbox { position: fixed; bottom: 94px; right: 20px; width: 320px; max-width: calc(100% - 48px); z-index: 50; padding: 12px; border-radius: 14px; }
+    #chat-messages { max-height: 250px; overflow-y: auto; }
+
+    /* ---------- footer ---------- */
+    .site-footer {
+        padding: 40px 20px;
+        background: rgba(10, 15, 28, 0.5);
+        border-top: 1px solid var(--glass-border);
+    }
+    .footer-nav-icons {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        margin-bottom: 32px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--glass-border);
+    }
+    .footer-icon {
+        color: var(--muted);
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.8rem;
+        position: relative;
+    }
+    .footer-icon:hover { color: #fff; }
+    .notification-badge {
+        position: absolute;
+        top: -4px;
+        right: -8px;
+        background: #ef4444;
+        color: white;
+        font-size: 0.7rem;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+    .footer-links-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        text-align: left;
+    }
+     @media(min-width: 768px) {
+        .footer-links-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+    .footer-links-grid h4 { margin: 0 0 12px; color: #fff; }
+    .footer-links-grid a {
+        display: block;
+        color: var(--muted);
+        text-decoration: none;
+        margin-bottom: 8px;
+        font-size: 0.9rem;
+    }
+     .footer-links-grid a:hover { color: #fff; }
+    .footer-copyright {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 1px solid var(--glass-border);
+        font-size: 0.85rem;
+    }
+    
+    .top-nav-icons {
+        display: none; /* Hidden on mobile */
+        justify-content: center;
+        gap: 24px;
+    }
+     @media (min-width: 900px) {
+        .top-nav-icons { display: flex; }
+    }
+
+    /* ---------- responsive ---------- */
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    @media (min-width: 768px) {
+      .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+      #mobile-menu-btn { display: none; }
+    }
+    @media (max-width: 899px) {
+      .desktop-links { display: none }
+    }
+
+    /* ---------- subtle animations ---------- */
+    .transition-fast { transition: all .16s ease }
+
+    /* ---------- starfield canvas ---------- */
+    #starfield-canvas {
+      position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
+      filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.6));
+    }
+
+    /* ---------- game/tutorial area specifics ---------- */
+    .game-stage { min-height: 320px; border-radius: 12px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+    .game-overlay-ui { position: absolute; left: 12px; top: 12px; z-index: 30; display: flex; gap: 8px; align-items: center; }
+    .game-controls-overlay {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 35;
+        display: flex;
+        gap: 8px;
+    }
+    
+    #planet-quiz-stage .game-content {
+        flex-grow: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
+    }
+    #planet-quiz-options {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; width: 100%; max-width: 400px;
+    }
+    
+    #stargazing-stage {
+        background: linear-gradient(180deg, #0a0c10, #010409);
+    }
+    #stargazing-controls {
+        position: absolute;
+        bottom: 12px;
+        left: 12px;
+        right: 12px;
+        z-index: 20;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        padding: 12px;
+        background: rgba(0,0,0,0.4);
+        border-radius: 12px;
+    }
+    
+    .tutorial-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+     @media (min-width: 1024px) {
+        .tutorial-container { grid-template-columns: 3fr 1fr; }
+    }
+    .tutorial-sim {
+        background: #0a0c10;
+        border-radius: 12px;
+        height: 400px;
+        position: relative;
+    }
+     .tutorial-sim canvas { width: 100%; height: 100%; }
+    .tutorial-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+    }
+    .tutorial-sidebar {
+        background: rgba(255,255,255,0.02);
+        padding: 16px;
+        border-radius: 12px;
+    }
+    .draggable-element { cursor: grab; padding: 6px 10px; background: var(--accent); color: var(--bg); border-radius: 8px; font-weight: 600; }
+    .video-card {
+        text-decoration: none;
+        color: #e6eef8;
+        display: block;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .video-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(146, 183, 255, 0.1);
+    }
+    .video-card img {
+        position: relative;
+    }
+    
+    /* logos container */
+    .logos { display: flex; gap: 12px; align-items: center; justify-content: center; flex-wrap: wrap; margin-top: 8px; }
+    .logo-pill { background: rgba(255, 255, 255, 0.02); padding: 8px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid rgba(255, 255, 255, 0.02); }
+    .logo-pill:hover { transform: translateY(-4px); box-shadow: 0 10px 30px rgba(146, 183, 255, 0.04); transition: all .18s ease; }
+  </style>
+
+  <!-- Inline SVG symbol set -->
+  <svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden" focusable="false">
+    <defs>
+      <g id="logo-react" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.2" fill="#61DAFB"></circle><g stroke="#61DAFB" stroke-width="1.1" fill="none" stroke-linecap="round"><ellipse rx="6.5" ry="2.6" cx="12" cy="12"></ellipse><ellipse rx="6.5" ry="2.6" cx="12" cy="12" transform="rotate(60 12 12)"></ellipse><ellipse rx="6.5" ry="2.6" cx="12" cy="12" transform="rotate(120 12 12)"></ellipse></g></g>
+      <g id="logo-node" viewBox="0 0 24 24"><path d="M12 2l8 4v8l-8 4-8-4V6z" fill="#8CC84B"></path><circle cx="12" cy="12" r="2.2" fill="#ffffff" opacity="0.06"></circle></g>
+      <g id="logo-tailwind" viewBox="0 0 24 24"><path d="M3 12c3-2.5 6-3 9-1 3 2 6 1.5 9-2" stroke="#38BDF8" stroke-width="1.4" fill="none" stroke-linecap="round"></path></g>
+      <g id="logo-gemini" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3" fill="#8ef0ff" opacity="0.08"></rect><path d="M7 12h10M12 7v10" stroke="#8ef0ff" stroke-width="1.3" stroke-linecap="round"></path></g>
+      <g id="logo-nasa" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#071426"></circle><path d="M4 14c4-6 12-6 16 0" stroke="#8ef0ff" stroke-width="1.2" fill="none" stroke-linecap="round"></path><circle cx="17" cy="7" r="1.3" fill="#8ef0ff"></circle></g>
+    </defs>
+  </svg>
+</head>
+<body>
+  <!-- STARFIELD CANVAS (interactive parallax) -->
+  <canvas id="starfield-canvas" aria-hidden="true"></canvas>
+
+  <!-- NAVBAR -->
+  <header class="container" style="position:sticky;top:12px;z-index:40;">
+    <nav class="glass-card p-4 rounded-xl flex items-center justify-between" role="navigation" aria-label="Main navigation">
+      <a href="#hero" class="flex items-center gap-4" style="text-decoration: none;">
+        <span aria-hidden class="p-2 rounded-full flex items-center justify-center" style="background:linear-gradient(90deg,#84baff,#8ef0ff); width:44px; height:44px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M12 2v20" stroke="#071426" stroke-width="1.6" stroke-linecap="round"></path><circle cx="18" cy="6" r="2" fill="#071426"></circle></svg>
+        </span>
+        <div>
+          <div style="font-weight:800;color:#ffffff;font-size:1.05rem;">NovaLink</div>
+          <div class="muted" style="font-size:0.74rem">Ethereal Scientific Launchpad</div>
+        </div>
+      </a>
+      
+      <div class="top-nav-icons">
+        <a href="#" class="footer-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg><span>Home</span></a>
+        <a href="#" class="footer-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg><span>My Network</span></a>
+        <a href="#" class="footer-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg><span>Jobs</span></a>
+        <a href="#" class="footer-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg><span>Messaging</span></a>
+        <a href="#" class="footer-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            <span>Notifications</span>
+            <span class="notification-badge">17</span>
+        </a>
+      </div>
+
+      <button id="mobile-menu-btn" aria-expanded="false" aria-controls="mobile-menu" aria-label="Toggle menu" style="background:none;border:none;color:#92b7ff;padding: 4px;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Mobile menu (hidden by default) -->
+  <div id="mobile-menu" class="glass-card p-4 hidden" role="menu" style="position:fixed; left:16px; right:16px; top:90px; z-index:35; border-radius:14px;">
+    <a href="#features-guide" role="menuitem" class="block p-2 muted" style="text-decoration: none;">Features</a>
+    <a href="#demo" role="menuitem" class="block p-2 muted" style="text-decoration: none;">Analyzer</a>
+    <a href="#opportunities" role="menuitem" class="block p-2 muted" style="text-decoration: none;">Opportunities</a>
+    <a href="#interview-assist" role="menuitem" class="block p-2 muted" style="text-decoration: none;">Interview</a>
+    <a href="#proposal-assist" role="menuitem" class="block p-2 muted" style="text-decoration: none;">Proposal</a>
+    <a href="#tutorials" role="menuitem" class="block p-2 muted" style="text-decoration: none;">Tutorials</a>
+    <a href="#video-tutorials" role="menuitem" class="block p-2 muted" style="text-decoration: none;">Videos</a>
+    <a href="#games" role="menuitem" class="block p-2 muted" style="text-decoration: none;">Games</a>
+    <a href="#signup-section" role="menuitem" class="block p-2 mt-2"><button class="accent-button w-full" tabindex="-1">Sign up</button></a>
+  </div>
+
+  <main style="position:relative; z-index:10; padding-top:28px;">
+    <!-- HERO -->
+    <section id="hero" class="text-center" aria-labelledby="hero-title" style="min-height:68vh; display:flex; align-items:center; justify-content:center; position:relative; padding:40px 20px;">
+      <div class="container" style="z-index:20; max-width:920px;">
+        <h1 id="hero-title" class="big" style="color:white; font-weight: 800;">
+          <span style="background:linear-gradient(90deg,#92b7ff,#8ef0ff); -webkit-background-clip:text; background-clip:text; color:transparent">NovaLink</span>
+        </h1>
+        <p class="muted" style="margin-top:12px; max-width:720px; margin-left:auto; margin-right:auto;">Your Authoritative Launchpad to a Verified Space Career.</p>
+        <div style="margin-top:20px; display:flex; gap:12px; justify-content:center; align-items:center; flex-wrap:wrap">
+          <a href="#demo" class="accent-button" style="border-radius:999px; padding:12px 20px; text-decoration: none;">Find My Space Career →</a>
+        </div>
+        <div class="logos" style="margin-top:18px;">
+          <span class="logo-pill" data-logo="react" title="Built with React (frontend)"><svg width="18" height="18" aria-hidden><use href="#logo-react"></use></svg><small class="muted">React</small></span>
+          <span class="logo-pill" data-logo="node" title="Backend friendly: Node.js"><svg width="18" height="18" aria-hidden><use href="#logo-node"></use></svg><small class="muted">Node.js</small></span>
+          <span class="logo-pill" data-logo="tailwind" title="Styled with Tailwind-like utilities"><svg width="18" height="18" aria-hidden><use href="#logo-tailwind"></use></svg><small class="muted">Tailwind</small></span>
+          <span class="logo-pill" data-logo="gemini" title="AI: Gemini (proxy)"><svg width="18" height="18" aria-hidden><use href="#logo-gemini"></use></svg><small class="muted">Gemini</small></span>
+          <span class="logo-pill" data-logo="nasa" title="Inspired by NASA challenge"><svg width="18" height="18" aria-hidden><use href="#logo-nasa"></use></svg><small class="muted">Space Apps</small></span>
+        </div>
+      </div>
+    </section>
+
+    <div class="container" style="padding:28px 20px 84px;">
+      <!-- Feature Guide Section -->
+      <section id="features-guide" style="margin-bottom:48px;">
+          <h2 id="features-heading" class="section-heading" style="margin-left:auto; margin-right:auto; display:table;">Your Guide to the NovaLink Platform</h2>
+          <div class="glass-card p-6 rounded-xl max-w-4xl" style="margin: 0 auto;">
+              <p class="muted text-center" style="margin-top: 0;">Welcome to NovaLink! Our platform is designed to be your launchpad into the space industry, no matter your background. Here’s a simple breakdown of each tool and how it can help you on your journey.</p>
+              
+              <div class="mt-4" style="display: flex; flex-direction: column; gap: 24px; text-align: left;">
+                  <div>
+                      <h3 style="margin-bottom: 8px;">1. ✨ Consolidated Skill Analyzer</h3>
+                      <p class="muted text-sm" style="margin-top: 0;">This is your personal career advisor. Enter a skill—anything from "robotics" to "project management"—and our AI analyzes how it applies to the space industry, providing you with a career path, a skill gap, and a suggested role. After analysis, click "Find Learning Resources" to get a personalized list of free courses and articles to close your skill gap.</p>
+                  </div>
+                  <div>
+                      <h3 style="margin-bottom: 8px;">2. ✨ AI Interview Prep</h3>
+                      <p class="muted text-sm" style="margin-top: 0;">Get ready for job interviews in the space sector. Enter a job title, and the AI generates challenging, open-ended interview questions specific to that role, helping you practice your answers and build confidence.</p>
+                  </div>
+                   <div>
+                      <h3 style="margin-bottom: 8px;">3. ✨ AI Mission Proposal Drafter</h3>
+                      <p class="muted text-sm" style="margin-top: 0;">Have a great idea for a space mission? Enter a simple objective, and the AI instantly creates a professional, structured outline for a mission proposal, giving your idea a solid framework to build upon.</p>
+                  </div>
+                  <div>
+                      <h3 style="margin-bottom: 8px;">4. 🚀 Interactive Learning Modules</h3>
+                      <p class="muted text-sm" style="margin-top: 0;">These are hands-on mini-games designed to teach core space science concepts. The full platform will suggest modules based on your skill gaps. Prototypes include the Gravity Orbital Simulator and the SpectroScan Challenge.</p>
+                  </div>
+                  <div>
+                      <h3 style="margin-bottom: 8px;">5. 🔭 Educational Games</h3>
+                      <p class="muted text-sm" style="margin-top: 0;">Test your knowledge with fun, space-themed games. Identify planets based on clues or relax while learning constellations in our Stargazing game.</p>
+                  </div>
+              </div>
+          </div>
+      </section>
+
+      <!-- Analyzer -->
+      <section id="demo" aria-labelledby="demo-heading" style="margin-bottom:28px;">
+        <h2 id="demo-heading" class="section-heading">✨ Consolidated Skill Analyzer</h2>
+        <div class="glass-card p-4 rounded-xl" style="max-width:920px; margin:0 auto;">
+          <p class="text-sm muted text-center" style="margin-bottom:12px">Input a skill or experience to generate a complete career, gap, and mission role profile.</p>
+          <div style="display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center">
+            <label for="skill-input" class="sr-only">Skill or Experience</label>
+            <input id="skill-input" type="text" placeholder="e.g., Robotics, Managing a remote team" aria-label="Skill or experience" />
+            <button data-action="recommend" id="recommend-btn" class="accent-button" aria-label="Analyze profile">Analyze</button>
+          </div>
+          <div id="ai-area" style="margin-top:18px;">
+            <div id="ai-placeholder" class="card-soft" aria-live="polite">Enter a skill or experience above to generate your comprehensive space profile.</div>
+            <div id="ai-loading" class="hidden text-center" style="padding:12px; margin-top:8px">Analyzing profile...</div>
+            <div id="ai-output" class="hidden" style="margin-top:12px;">
+              <div style="display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:12px;">
+                <div class="card-soft" style="border-left:4px solid #92b7ff"><h4 class="font-semibold text-sm" style="color:#92b7ff">Targeted Career Path</h4><p id="ai-career-path" class="muted text-sm">—</p></div>
+                <div class="card-soft" style="border-left:4px solid #22c55e"><h4 class="font-semibold text-sm" style="color:#22c55e">Mapped Mission Competency</h4><p id="mapped-competency" class="muted text-sm">—</p></div>
+                <div class="card-soft" style="border-left:4px solid #f43f5e">
+                    <div class="flex justify-between items-center">
+                         <h4 class="font-semibold text-sm" style="color:#f43f5e">Critical Skill Gap</h4>
+                         <button id="find-resources-btn" class="accent-button hidden" style="padding: 2px 8px; font-size: 0.75rem;">Find Resources</button>
+                    </div>
+                    <p id="ai-skill-gap" class="muted text-sm">—</p>
+                </div>
+                <div class="card-soft" style="border-left:4px solid #92b7ff"><h4 class="font-semibold text-sm" style="color:#92b7ff">Suggested Role</h4><p id="suggested-role" class="muted text-sm">—</p></div>
+              </div>
+                <div class="mt-4 text-center">
+                    <button id="generate-strategy-btn" class="accent-button hidden">Generate Role Targeting Strategy</button>
+                </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Targeting Strategy Section -->
+       <section id="strategy-section" class="hidden" style="margin-bottom:28px;">
+        <h2 class="section-heading">✨ Role Targeting Strategy</h2>
+        <div class="glass-card p-4 rounded-xl max-w-3xl" style="margin:8px auto 0;">
+          <div id="strategy-loading" class="hidden text-center">Generating strategy...</div>
+          <div id="strategy-output" class="muted text-sm"></div>
+        </div>
+      </section>
+
+      <!-- Personalized Learning Path -->
+       <section id="learning-path-section" class="hidden" style="margin-bottom:28px;">
+        <h2 id="learning-path-heading" class="section-heading">✨ Personalized Learning Path</h2>
+        <div class="glass-card p-4 rounded-xl max-w-3xl" style="margin:8px auto 0;">
+          <p class="text-sm muted text-center">Based on your skill gap, here are some AI-recommended free resources to get you started. In a full version, games and tutorials would also be personalized for you.</p>
+          <div id="resource-loading" class="hidden text-center mt-4">Finding resources...</div>
+          <div id="resource-list" class="mt-4" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+      </section>
+      
+      <!-- Career Opportunities -->
+       <section id="opportunities" style="margin-bottom:28px;">
+        <h2 class="section-heading">✨ Career Opportunities</h2>
+        <div class="glass-card p-4 rounded-xl max-w-4xl mx-auto">
+            <p class="text-sm muted text-center mb-4">Use our AI-powered search to find current jobs, internships, and space agencies around the world.</p>
+            <div class="grid-2" style="gap: 12px; margin-bottom: 16px;">
+                <input id="job-keyword-input" type="text" placeholder="Keyword (e.g., engineer, python)">
+                <input id="job-location-input" type="text" placeholder="Location (e.g., Florida, USA)">
+            </div>
+            <div class="flex flex-wrap justify-center gap-4">
+                <button data-action="find-jobs" class="accent-button">Find Jobs</button>
+                <button data-action="find-internships" class="accent-button">Find Internships</button>
+                <button data-action="find-agencies" class="accent-button">Find Agencies</button>
+            </div>
+            <div id="opportunity-loading" class="hidden text-center mt-4">Searching for opportunities...</div>
+            <div id="opportunity-results" class="mt-4" style="display: flex; flex-direction: column; gap: 12px;"></div>
+        </div>
+      </section>
+
+
+      <!-- All other sections follow -->
+      <section id="interview-assist" style="margin-bottom:28px;">
+        <h2 id="interview-heading" class="section-heading">✨ AI Interview Prep</h2>
+        <div class="glass-card p-4 rounded-xl max-w-3xl" style="margin:8px auto 0;">
+          <p class="text-sm muted text-center">Input a role to generate interview questions. <strong>(Auto-fills from Skill Analyzer)</strong></p>
+          <div style="display:grid; grid-template-columns:1fr auto; gap:10px; margin-top:12px;">
+            <label for="role-input" class="sr-only">Career Role</label>
+            <input id="role-input" type="text" placeholder="e.g., Lunar Architect" />
+            <button data-action="interview" id="interview-btn" class="accent-button">Get Questions</button>
+          </div>
+          <div id="interview-placeholder" class="card-soft" style="margin-top:12px" aria-live="polite">Prepare for your mission by simulating an interview.</div>
+          <ul id="interview-list" class="hidden card-soft" style="margin-top:12px; padding-left:30px;"></ul>
+        </div>
+      </section>
+
+      <section id="proposal-assist" style="margin-bottom:28px;">
+        <h2 id="proposal-heading" class="section-heading">✨ AI Mission Proposal Drafter</h2>
+        <div class="glass-card p-4 rounded-xl max-w-3xl" style="margin:8px auto 0;">
+          <p class="text-sm muted text-center">Input a mission objective to generate a structured, high-level proposal outline.</p>
+          <div style="display:grid; grid-template-columns:1fr auto; gap:10px; margin-top:12px;">
+            <label for="mission-input" class="sr-only">Mission Objective</label>
+            <input id="mission-input" type="text" placeholder="e.g., Establish permanent Mars research habitat" />
+            <button data-action="draft" id="draft-btn" class="accent-button">Draft Outline</button>
+          </div>
+          <pre id="proposal-text" class="hidden card-soft" style="margin-top:12px; white-space:pre-wrap; max-height:300px; overflow:auto;"></pre>
+          <div id="proposal-placeholder" class="card-soft" style="margin-top:12px" aria-live="polite">Kickstart your mission proposal.</div>
+        </div>
+      </section>
+
+      <section id="tutorials" style="margin-bottom:28px;">
+        <h2 id="tutorials-heading" class="section-heading">Interactive Learning Modules</h2>
+        <p class="text-sm muted" style="margin-top:-8px; margin-bottom: 16px;">These modules are prototypes. In the full NovaLink platform, tutorials will be personalized to your profile and recommended to address specific skill gaps identified by the Analyzer.</p>
+        
+        <!-- Gravity Orbital Simulator -->
+        <div class="glass-card p-4 rounded-xl mt-4">
+            <h3 style="margin-top:0">Gravity Orbital Simulator</h3>
+            <div class="tutorial-container">
+                <div class="tutorial-sim">
+                    <canvas id="gravity-canvas"></canvas>
+                </div>
+                <div class="tutorial-sidebar">
+                    <h4>How it Works</h4>
+                    <p class="text-sm muted">Use the sliders to set your spacecraft's initial launch speed and angle. Your goal is to achieve a stable orbit within the green zone without crashing or flying off into space!</p>
+                     <div class="mt-4">
+                        <label for="sim-planet">Target Body:</label>
+                        <select id="sim-planet">
+                            <option value="Earth">Earth</option>
+                            <option value="Moon">The Moon</option>
+                            <option value="Mars">Mars</option>
+                            <option value="Jupiter">Jupiter</option>
+                            <option value="High-G Planet">High-G Planet</option>
+                        </select>
+                    </div>
+                    <div class="mt-4">
+                         <label for="sim-speed">Launch Speed: <span id="sim-speed-value">4.0</span> km/s</label>
+                         <input type="range" id="sim-speed" min="1" max="15" value="4" step="0.1">
+                    </div>
+                     <div class="mt-4">
+                         <label for="sim-angle">Launch Angle: <span id="sim-angle-value">0</span>°</label>
+                         <input type="range" id="sim-angle" min="-90" max="90" value="0">
+                    </div>
+                    <div class="mt-4 tutorial-controls">
+                        <button id="launch-sim-btn" class="accent-button">Launch</button>
+                        <button id="reset-sim-btn" class="accent-button">Reset</button>
+                    </div>
+                    <div class="mt-4 card-soft">
+                        <h4 style="margin:0 0 8px 0; font-size: 1rem;">Real-Time Status</h4>
+                        <p class="text-sm muted" id="sim-status-text">Status: Ready</p>
+                        <p class="text-sm muted" id="sim-gravity-text">Gravity: 1000</p>
+                        <p class="text-sm muted" id="sim-velocity-text">Velocity: 0.0 km/s</p>
+                        <p class="text-sm muted" id="sim-altitude-text">Altitude: 0 km</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SpectroScan Challenge -->
+        <div class="glass-card p-4 rounded-xl mt-4">
+            <h3 style="margin-top:0">SpectroScan Challenge</h3>
+            <div class="tutorial-container">
+                <div class="tutorial-sim">
+                    <canvas id="spectro-canvas"></canvas>
+                    <div id="spectro-feedback" class="hidden" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size: 1.5rem; font-weight: bold; color: white; background: rgba(0,0,0,0.5);"></div>
+                </div>
+                <div class="tutorial-sidebar">
+                    <h4>Identify the Element</h4>
+                    <p class="text-sm muted">Drag the correct element label from below and drop it onto the spectrum to identify the star's composition based on its unique light signature.</p>
+                     <div class="mt-4">
+                        <strong>Score: <span id="spectro-score">0</span></strong>
+                    </div>
+                    <div id="spectro-elements" class="mt-4 tutorial-controls">
+                        <!-- Draggable elements will be injected here -->
+                    </div>
+                    <button id="next-spectro-btn" class="accent-button mt-4">Next Spectrum</button>
+                </div>
+            </div>
+        </div>
+
+      </section>
+      
+      <section id="video-tutorials" style="margin-bottom:28px;">
+        <h2 class="section-heading">Video Tutorials</h2>
+        <p class="text-sm muted" style="margin-top:-8px; margin-bottom: 16px;">
+            Curated video lessons from space industry experts. In the full version, these would be recommended based on your skill gap analysis.
+        </p>
+        <div class="grid-3">
+            <a href="#" class="glass-card p-4 rounded-xl video-card" data-video-title="Orbital Mechanics 101">
+                <img src="https://placehold.co/600x400/0f1724/8ef0ff?text=Orbital%0AMechanics%0A101&font=inter" alt="Orbital Mechanics 101" style="width:100%; border-radius: 8px; margin-bottom: 12px;">
+                <h4 style="margin:0 0 4px 0;">Intro to Orbital Mechanics</h4>
+                <p class="text-sm muted" style="margin: 0 0 8px 0;">Learn the fundamentals of getting into and staying in orbit.</p>
+                <small class="muted">by NASA JPL</small>
+            </a>
+            <a href="#" class="glass-card p-4 rounded-xl video-card" data-video-title="Spectroscopy Explained">
+                <img src="https://placehold.co/600x400/0f1724/92B7FF?text=Spectroscopy%0AExplained&font=inter" alt="Spectroscopy Explained" style="width:100%; border-radius: 8px; margin-bottom: 12px;">
+                <h4 style="margin:0 0 4px 0;">Reading Starlight: Spectroscopy Basics</h4>
+                <p class="text-sm muted" style="margin: 0 0 8px 0;">How we know what distant stars are made of.</p>
+                <small class="muted">by PBS Space Time</small>
+            </a>
+            <a href="#" class="glass-card p-4 rounded-xl video-card" data-video-title="Mars Rover Engineering">
+                 <img src="https://placehold.co/600x400/0f1724/f97316?text=Mars%20Rover%0AEngineering&font=inter" alt="Mars Rover Engineering" style="width:100%; border-radius: 8px; margin-bottom: 12px;">
+                <h4 style="margin:0 0 4px 0;">Engineering Perseverance</h4>
+                <p class="text-sm muted" style="margin: 0 0 8px 0;">A deep dive into the tech behind Mars exploration.</p>
+                <small class="muted">by SmarterEveryDay</small>
+            </a>
+        </div>
+    </section>
+
+      <section id="games" style="margin-bottom:28px;">
+        <h2 class="section-heading">🚀 Educational Games</h2>
+        <div class="grid-2">
+          <!-- Planet Identifier -->
+          <div class="glass-card p-4 rounded-xl">
+            <h3 class="flex justify-between items-center" style="margin:0">Planet Identifier</h3>
+            <div id="planet-quiz-stage" class="game-stage" style="margin-top:12px; height:360px; background:linear-gradient(180deg, #1e293b, #0f172a);">
+                <div class="game-overlay-ui">
+                    <div class="card-soft" style="padding:6px 10px;"><strong id="planet-quiz-score">Score: 0</strong></div>
+                    <div class="card-soft" style="padding:6px 10px;"><span id="planet-quiz-progress">Q: 1/8</span></div>
+                </div>
+                <div class="game-content">
+                    <p id="planet-quiz-clue" class="text-lg">This planet is known as the Red Planet.</p>
+                    <div id="planet-quiz-options"></div>
+                </div>
+                <div id="planet-quiz-message" class="hidden" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size: 1.5rem; font-weight: bold; color: white; background: rgba(0,0,0,0.5);"></div>
+                <div class="game-controls-overlay">
+                    <button id="start-planet-quiz-btn" class="accent-button">Start Quiz</button>
+                    <button id="fullscreen-planet-quiz-btn" class="accent-button icon-button" aria-label="Toggle Fullscreen">
+                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                    </button>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="flex justify-between items-center">
+                    <h4 style="margin:0 0 6px 0">Leaderboard</h4>
+                    <div class="flex items-center gap-4">
+                        <input id="player-name-planet-quiz" type="text" placeholder="Your name" style="padding:6px 10px; border-radius:8px; background:#061026; color:#fff; border:1px solid rgba(255,255,255,0.03); width: 120px;" />
+                        <button id="save-planet-quiz-score" class="accent-button" style="padding:6px 10px;">Save</button>
+                    </div>
+                </div>
+                <ol id="planet-quiz-leader" style="padding-left:18px; margin-top:6px;" class="muted"></ol>
+            </div>
+          </div>
+          <!-- Stargazing -->
+          <div class="glass-card p-4 rounded-xl">
+             <h3 class="flex justify-between items-center" style="margin:0">Stargazing</h3>
+            <div id="stargazing-stage" class="game-stage" style="margin-top:12px; height:360px;">
+                <canvas id="stargazing-canvas" style="position:absolute; inset:0; width:100%; height:100%;"></canvas>
+                <div class="game-overlay-ui">
+                    <div class="card-soft" style="padding:6px 10px;"><strong id="stargazing-score">Score: 0</strong></div>
+                </div>
+                <div id="stargazing-controls"></div>
+                 <div id="stargazing-message" class="hidden" style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size: 1.5rem; font-weight: bold; color: white; background: rgba(0,0,0,0.5);"></div>
+            </div>
+            <div style="margin-top:10px;">
+                <div class="flex justify-between items-center">
+                     <div>
+                        <h4 style="margin:0 0 6px 0">Identify the Constellation</h4>
+                         <p id="stargazing-question" class="muted text-sm">What constellation is this?</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <input id="player-name-stargazing" type="text" placeholder="Your name" style="padding:6px 10px; border-radius:8px; background:#061026; color:#fff; border:1px solid rgba(255,255,255,0.03); width: 120px;" />
+                        <button id="save-stargazing-score" class="accent-button" style="padding:6px 10px;">Save</button>
+                    </div>
+                </div>
+                 <div style="margin-top:10px;"><h4 style="margin:0 0 6px 0">Leaderboard</h4><ol id="stargazing-leader" style="padding-left:18px; margin-top:6px;" class="muted"></ol></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="signup-section" aria-labelledby="signup-heading">
+        <h2 id="signup-heading" class="section-heading">Join the Beta</h2>
+        <div class="glass-card p-6 rounded-xl max-w-3xl mx-auto" style="margin:8px auto 0;">
+            <p class="text-sm muted text-center mb-4">Enroll in the NovaLink beta program to get early access to new features and modules.</p>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <label for="name-input" class="sr-only">Your Name</label>
+                <input id="name-input" type="text" placeholder="Your Name">
+                <label for="email-input" class="sr-only">Your Email</label>
+                <input id="email-input" type="email" placeholder="Your Email">
+                <button id="signup-btn" class="accent-button" style="justify-content: center;">Enroll in Launchpad</button>
+                <div id="signup-message" class="card-soft text-center hidden"></div>
+            </div>
+        </div>
+      </section>
+
+    </div> <!-- container end -->
+  </main>
+  
+  <footer class="site-footer">
+    <div class="container">
+        
+        <div class="footer-links-grid">
+            <div>
+                <h4>General</h4>
+                <a href="#">About</a>
+                <a href="#">Accessibility</a>
+                <a href="#">Help Center</a>
+                <a href="#">Privacy & Terms</a>
+                <a href="#">Ad Choices</a>
+            </div>
+            <div>
+                <h4>Business</h4>
+                <a href="#">Advertising</a>
+                <a href="#">Business Services</a>
+                <a href="#">Get the NovaLink app</a>
+                <a href="#">More</a>
+            </div>
+             <div>
+                <h4>Browse</h4>
+                <a href="#">Learning</a>
+                <a href="#">Jobs</a>
+                <a href="#">Salary</a>
+                <a href="#">Mobile</a>
+                <a href="#">Services</a>
+            </div>
+             <div>
+                <h4>Community</h4>
+                <a href="#">Groups</a>
+                <a href="#">Articles</a>
+                <a href="#">Topics</a>
+                <a href="#">Events</a>
+            </div>
+        </div>
+         <div id="local-settings" class="mt-4 pt-4" style="border-top: 1px solid var(--glass-border);">
+            <h4 class="text-center font-semibold">Local Development Settings</h4>
+            <div class="max-w-xl mx-auto">
+              <p class="text-sm muted text-center">To run locally, enter your Gemini API key below. It will be saved in your browser's local storage.</p>
+              <div style="display:grid; grid-template-columns:1fr auto; gap:10px; margin-top:12px;">
+                <label for="api-key-input" class="sr-only">Gemini API Key</label>
+                <input id="api-key-input" type="password" placeholder="Enter your Gemini API key" />
+                <button id="save-api-key-btn" class="accent-button">Save Key</button>
+              </div>
+            </div>
+        </div>
+        <div class="footer-copyright text-center muted">
+            NovaLink &copy; 2025
+        </div>
+    </div>
+  </footer>
+
+  <!-- AI Mentor Floating Button -->
+  <button id="ai-mentor" aria-label="Toggle AI Mentor Chat">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M7 12h10M12 7v10" stroke="#8ef0ff" stroke-width="1.6" stroke-linecap="round"></path></svg>
+  </button>
+  
+  <!-- AI Mentor Chatbox -->
+  <div id="chatbox" class="glass-card hidden">
+      <div id="chat-messages" class="mb-2">
+          <div class="muted text-sm">AI Mentor: How can I help you prepare for your mission?</div>
+      </div>
+      <label for="chat-input" class="sr-only">Chat with AI Mentor</label>
+      <input id="chat-input" type="text" placeholder="Ask a question...">
+  </div>
+
+  <!-- Custom Modal -->
+  <div id="custom-modal" class="hidden" style="position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px);">
+    <div class="glass-card p-6 rounded-xl" style="max-width:400px; text-align:center;">
+      <p id="modal-message" style="margin: 0 0 16px 0;"></p>
+      <button id="modal-close-btn" class="accent-button">Close</button>
+    </div>
+  </div>
+
+
+  <script>
+  (function() {
+    /* -------------------------
+        Utility helpers & config
+    ------------------------- */
+    const $ = (s, p = document) => p.querySelector(s);
+    const $$ = (s, p = document) => Array.from((p || document).querySelectorAll(s));
+
+    /* ---------- WebAudio utility ---------- */
+    const audioCtx = typeof AudioContext !== 'undefined' ? new AudioContext() : null;
+    function playBeep({ freq = 880, length = 0.08, type = 'sine', gain = 0.12 } = {}) {
+        if (!audioCtx) return;
+        try {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.type = type;
+            o.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            g.gain.setValueAtTime(gain, audioCtx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + length);
+            o.connect(g).connect(audioCtx.destination);
+            o.start();
+            o.stop(audioCtx.currentTime + length + 0.02);
+        } catch(e) {
+            console.warn("Audio failed to play:", e);
+        }
+    }
+
+    /* ---------- Escape HTML ---------- */
+    function escapeHtml(s) { return String(s).replace(/[&<"'>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m])); }
+
+    /* -------------------------
+        Elements map
+    ------------------------- */
+    const els = {
+        skillInput: $('#skill-input'),
+        recommendBtn: $('#recommend-btn'),
+        aiPlaceholder: $('#ai-placeholder'),
+        aiLoading: $('#ai-loading'),
+        aiOutput: $('#ai-output'),
+        aiCareerPath: $('#ai-career-path'),
+        aiSkillGap: $('#ai-skill-gap'),
+        findResourcesBtn: $('#find-resources-btn'),
+        generateStrategyBtn: $('#generate-strategy-btn'),
+        strategySection: $('#strategy-section'),
+        strategyLoading: $('#strategy-loading'),
+        strategyOutput: $('#strategy-output'),
+        learningPathSection: $('#learning-path-section'),
+        resourceLoading: $('#resource-loading'),
+        resourceList: $('#resource-list'),
+        mappedCompetency: $('#mapped-competency'),
+        suggestedRole: $('#suggested-role'),
+        roleInput: $('#role-input'),
+        interviewBtn: $('#interview-btn'),
+        interviewList: $('#interview-list'),
+        interviewPlaceholder: $('#interview-placeholder'),
+        missionInput: $('#mission-input'),
+        draftBtn: $('#draft-btn'),
+        proposalText: $('#proposal-text'),
+        proposalPlaceholder: $('#proposal-placeholder'),
+        nameInput: $('#name-input'),
+        emailInput: $('#email-input'),
+        signupBtn: $('#signup-btn'),
+        signupMessage: $('#signup-message'),
+        mentorBtn: $('#ai-mentor'),
+        chatBox: $('#chatbox'),
+        chatInput: $('#chat-input'),
+        chatMessages: $('#chat-messages'),
+        mobileMenuBtn: $('#mobile-menu-btn'),
+        mobileMenu: $('#mobile-menu'),
+        modal: $('#custom-modal'),
+        modalMessage: $('#modal-message'),
+        modalCloseBtn: $('#modal-close-btn'),
+        apiKeyInput: $('#api-key-input'),
+        saveApiKeyBtn: $('#save-api-key-btn'),
+
+        jobKeywordInput: $('#job-keyword-input'),
+        jobLocationInput: $('#job-location-input'),
+        opportunityLoading: $('#opportunity-loading'),
+        opportunityResults: $('#opportunity-results'),
+       
+        // tutorials
+        gravityCanvas: $('#gravity-canvas'),
+        simPlanet: $('#sim-planet'),
+        simSpeed: $('#sim-speed'),
+        simSpeedValue: $('#sim-speed-value'),
+        simAngle: $('#sim-angle'),
+        simAngleValue: $('#sim-angle-value'),
+        launchSimBtn: $('#launch-sim-btn'),
+        resetSimBtn: $('#reset-sim-btn'),
+        simStatusText: $('#sim-status-text'),
+        simVelocityText: $('#sim-velocity-text'),
+        simAltitudeText: $('#sim-altitude-text'),
+        simGravityText: $('#sim-gravity-text'),
+        
+        spectroCanvas: $('#spectro-canvas'),
+        spectroFeedback: $('#spectro-feedback'),
+        spectroScore: $('#spectro-score'),
+        spectroElements: $('#spectro-elements'),
+        nextSpectroBtn: $('#next-spectro-btn'),
+
+        // games
+        planetQuizStage: $('#planet-quiz-stage'),
+        startPlanetQuizBtn: $('#start-planet-quiz-btn'),
+        planetQuizScoreEl: $('#planet-quiz-score'),
+        planetQuizProgressEl: $('#planet-quiz-progress'),
+        planetQuizClueEl: $('#planet-quiz-clue'),
+        planetQuizOptionsEl: $('#planet-quiz-options'),
+        planetQuizMessageEl: $('#planet-quiz-message'),
+        playerNamePlanetQuiz: $('#player-name-planet-quiz'),
+        savePlanetQuizScore: $('#save-planet-quiz-score'),
+        planetQuizLeader: $('#planet-quiz-leader'),
+        fullscreenPlanetQuizBtn: $('#fullscreen-planet-quiz-btn'),
+
+        stargazingCanvas: $('#stargazing-canvas'),
+        stargazingScoreEl: $('#stargazing-score'),
+        stargazingControlsEl: $('#stargazing-controls'),
+        stargazingMessageEl: $('#stargazing-message'),
+        playerNameStargazing: $('#player-name-stargazing'),
+        saveStargazingScore: $('#save-stargazing-score'),
+        stargazingLeader: $('#stargazing-leader'),
+    };
+
+    /* -------------------------
+        Gemini API Integration
+    ------------------------- */
+    async function callGemini({ systemPrompt = '', userQuery = '', schema = null, useGrounding = false, retries = 3, delay = 1000 }) {
+        let apiKey = localStorage.getItem('geminiApiKey');
+        if (!apiKey) {
+             apiKey = "AIzaSyC-2HCqnWhK2gE1ccQUBk_HBkQBMiscPeg"; // Fallback to a default if not set
+        }
+        
+        if (!apiKey) {
+            showModal("API Key not found. Please add it in the 'Local Development Settings' section at the bottom of the page to use AI features.");
+            return { success: false, message: 'API Key is missing.' };
+        }
+
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+        const payload = {
+            contents: [{ parts: [{ text: userQuery }] }],
+            systemInstruction: { parts: [{ text: systemPrompt }] }
+        };
+
+        if (schema) {
+            payload.generationConfig = {
+                responseMimeType: "application/json",
+                responseSchema: schema
+            };
+        }
+        if (useGrounding) {
+            payload.tools = [{ "google_search": {} }];
+        }
+        
+        for (let i = 0; i < retries; i++) {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+
+                if (candidate?.content?.parts?.[0]?.text) {
+                    let data = candidate.content.parts[0].text;
+                    if (schema) {
+                        try { data = JSON.parse(data); } catch (e) { throw new Error("Failed to parse JSON response from API."); }
+                    }
+                    return { success: true, data };
+                } else if (candidate?.finishReason === "SAFETY") {
+                    throw new Error("Response was blocked for safety reasons.");
+                } else {
+                     throw new Error("Invalid response structure from API.");
+                }
+
+            } catch (error) {
+                console.warn(`API call failed. Attempt ${i + 1} of ${retries}. Retrying in ${delay}ms...`, error);
+                if (i === retries - 1) return { success: false, message: error.message };
+                await new Promise(res => setTimeout(res, delay));
+                delay *= 2; // Exponential backoff
+            }
+        }
+        return { success: false, message: 'API request failed after multiple retries.' };
+    }
+
+
+    /* -------------------------
+        UI Helpers (show/hide/modal)
+    ------------------------- */
+    function show(el) { if (el) el.classList.remove('hidden'); }
+    function hide(el) { if (el) el.classList.add('hidden'); }
+    function showModal(message) {
+      if (els.modal && els.modalMessage) {
+        els.modalMessage.textContent = message;
+        show(els.modal);
+        els.modalCloseBtn.focus();
+      }
+    }
+    
+    /* -------------------------
+        Analyzer & features (wiring)
+    ------------------------- */
+    let lastAnalysisResult = null;
+    document.addEventListener('click', async (e) => {
+        const target = e.target.closest('[data-action]');
+        if (!target) return;
+        const action = target.dataset.action;
+
+        target.disabled = true;
+
+        if (action === 'recommend') {
+            const skill = (els.skillInput?.value || '').trim();
+            if (!skill) { target.disabled = false; return showModal('Please enter a skill to start analysis.'); }
+            hide(els.aiOutput); hide(els.learningPathSection); hide(els.strategySection); show(els.aiLoading);
+            
+            const schema = {
+                type: "OBJECT", properties: { "career": { "type": "STRING" }, "gap": { "type": "STRING" }, "competency": { "type": "STRING" }, "role": { "type": "STRING" } },
+                 required: ["career", "gap", "competency", "role"]
+            };
+            const res = await callGemini({ systemPrompt: "As a space career advisor, analyze the user's skill for the space industry. For each field in the JSON schema, provide a very brief, to-the-point phrase. Avoid full sentences.", userQuery: `Analyze this skill for the space industry: "${skill}"`, schema });
+            hide(els.aiLoading);
+            if (res.success && res.data) {
+                lastAnalysisResult = res.data;
+                const d = res.data;
+                els.aiCareerPath.textContent = d.career || '—'; els.mappedCompetency.textContent = d.competency || '—';
+                els.aiSkillGap.textContent = d.gap || '—'; els.suggestedRole.textContent = d.role || '—';
+                els.roleInput.value = d.role || ''; 
+                show(els.aiOutput);
+                if(d.gap) show(els.findResourcesBtn); else hide(els.findResourcesBtn);
+                if(d.career && d.gap) show(els.generateStrategyBtn); else hide(els.generateStrategyBtn);
+            } else { showModal(`Analysis failed: ${res.message || 'Unknown error. Please try again.'}`); show(els.aiPlaceholder); }
+
+        } else if (action === 'interview') {
+            const role = (els.roleInput?.value || '').trim();
+            if (!role) { target.disabled = false; return showModal('Please enter a role for interview prep.'); }
+            hide(els.interviewList); show(els.interviewPlaceholder); els.interviewPlaceholder.textContent = 'Generating...';
+            const res = await callGemini({ systemPrompt: "You are a space industry hiring manager. Generate exactly three challenging, open-ended interview questions for the provided role. Each question must start with a number and a period (e.g., '1. ').", userQuery: `Role: ${role}` });
+            if (res.success && res.data) {
+                const lines = String(res.data).split('\n').filter(l => l.match(/^\s*\d+\./)).map(l => l.replace(/^\s*\d+\.\s*/, '').trim());
+                els.interviewList.innerHTML = lines.map(l => `<li>${escapeHtml(l)}</li>`).join('');
+                show(els.interviewList); hide(els.interviewPlaceholder);
+            } else { els.interviewPlaceholder.textContent = `Generation failed: ${res.message || 'Unknown'}`; }
+        } else if (action === 'draft') {
+            const mission = (els.missionInput?.value || '').trim();
+            if (!mission) { target.disabled = false; return showModal('Please enter a mission objective.'); }
+            hide(els.proposalText); show(els.proposalPlaceholder); els.proposalPlaceholder.textContent = 'Drafting...';
+            const res = await callGemini({ systemPrompt: "You are a mission planner. Generate a concise, high-level mission proposal outline in Markdown format. Include an Executive Summary and Mission Objectives.", userQuery: `Mission: ${mission}` });
+            if (res.success && res.data) {
+                els.proposalText.textContent = res.data;
+                show(els.proposalText); hide(els.proposalPlaceholder);
+            } else { els.proposalPlaceholder.textContent = `Draft failed: ${res.message || 'Unknown'}`; }
+        } else if (['find-jobs', 'find-internships', 'find-agencies'].includes(action)) {
+            const keyword = els.jobKeywordInput.value.trim();
+            const location = els.jobLocationInput.value.trim() || 'worldwide';
+            const type = action.split('-')[1]; // jobs, internships, or agencies
+            
+            show(els.opportunityLoading);
+            els.opportunityResults.innerHTML = '';
+
+            const res = await fetchAndDisplayOpportunities(type, keyword, location);
+            
+            hide(els.opportunityLoading);
+            if (!res) {
+                 els.opportunityResults.innerHTML = `<p class="muted text-center">Could not find opportunities at this time. Please try again.</p>`;
+            }
+        }
+        
+        target.disabled = false;
+    });
+    
+    els.generateStrategyBtn?.addEventListener('click', async () => {
+        if (!lastAnalysisResult || !lastAnalysisResult.career || !lastAnalysisResult.gap) return;
+        
+        show(els.strategySection);
+        show(els.strategyLoading);
+        els.strategyOutput.innerHTML = '';
+
+        const res = await callGemini({
+            systemPrompt: "You are a space industry career coach. Provide a practical, to-the-point strategy as a numbered list on how a user can bridge their skill gap to target a specific career. Keep each point brief.",
+            userQuery: `My target career is '${lastAnalysisResult.career}' and my identified skill gap is '${lastAnalysisResult.gap}'. Please provide a strategy.`
+        });
+        
+        hide(els.strategyLoading);
+        if(res.success) {
+            // Simple markdown-to-html for numbered lists
+            const html = res.data.replace(/^\s*(\d+\.)\s*(.*)$/gm, '<p class="text-sm muted" style="margin: 0 0 8px;">$1 $2</p>');
+            els.strategyOutput.innerHTML = html;
+        } else {
+            els.strategyOutput.innerHTML = `<p class="muted text-center">Could not generate a strategy at this time.</p>`;
+        }
+    });
+
+    async function fetchAndDisplayOpportunities(type, keyword, location) {
+        const queryMap = {
+            jobs: `Find current space industry jobs for a "${keyword}" in "${location}"`,
+            internships: `Find current space industry internships for a "${keyword}" in "${location}"`,
+            agencies: `Find space agencies in "${location}"`
+        };
+        
+        const schema = {
+            type: "ARRAY",
+            items: { type: "OBJECT", properties: {
+                "title": {"type": "STRING"},
+                "organization": {"type": "STRING"},
+                "location": {"type": "STRING"},
+                "description": {"type": "STRING"},
+                "url": {"type": "STRING"}
+            }, required: ["title", "organization", "location", "description", "url"] }
+        };
+
+        const res = await callGemini({
+            systemPrompt: "You are an expert space industry career advisor. Find relevant, current opportunities based on the user's query. Provide the results as a JSON array of objects, matching the provided schema. Each description should be a concise single sentence.",
+            userQuery: queryMap[type],
+            schema: schema,
+            useGrounding: true
+        });
+
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+            res.data.forEach(item => {
+                const itemEl = document.createElement('a');
+                itemEl.href = item.url;
+                itemEl.target = '_blank';
+                itemEl.className = 'card-soft';
+                itemEl.style.textDecoration = 'none';
+                itemEl.style.display = 'block';
+                itemEl.innerHTML = `
+                    <h4 style="margin:0 0 4px 0; color: var(--accent);">${escapeHtml(item.title)} - ${escapeHtml(item.organization)}</h4>
+                    <p class="text-sm muted" style="margin:0 0 4px 0;"><strong>Location:</strong> ${escapeHtml(item.location)}</p>
+                    <p class="text-sm muted" style="margin:0;">${escapeHtml(item.description)}</p>
+                `;
+                els.opportunityResults.appendChild(itemEl);
+            });
+            return true;
+        } else {
+            els.opportunityResults.innerHTML = `<p class="muted text-center">No results found for your query.</p>`;
+            return false;
+        }
+    }
+
+
+    els.findResourcesBtn?.addEventListener('click', async () => {
+        if (!lastAnalysisResult || !lastAnalysisResult.gap) return;
+        
+        show(els.learningPathSection);
+        show(els.resourceLoading);
+        els.resourceList.innerHTML = '';
+
+        const schema = {
+            type: "ARRAY",
+            items: {
+                type: "OBJECT",
+                properties: { "title": {"type": "STRING"}, "description": {"type": "STRING"}, "url": {"type": "STRING"} },
+                required: ["title", "description", "url"]
+            }
+        };
+
+        const res = await callGemini({
+            systemPrompt: "You are an expert learning advisor. Find 3-5 of the best free online resources (articles, videos, interactive tutorials) for the user's skill gap. Return the response as a JSON array of objects, matching the provided schema.",
+            userQuery: `Skill gap: "${lastAnalysisResult.gap}"`,
+            schema,
+            useGrounding: true
+        });
+
+        hide(els.resourceLoading);
+        if (res.success && Array.isArray(res.data)) {
+            res.data.forEach(resource => {
+                const resourceEl = document.createElement('a');
+                resourceEl.href = resource.url;
+                resourceEl.target = '_blank';
+                resourceEl.className = 'card-soft';
+                resourceEl.style.textDecoration = 'none';
+                resourceEl.style.display = 'block';
+                resourceEl.innerHTML = `
+                    <h4 style="margin:0 0 4px 0; color: var(--accent);">${escapeHtml(resource.title)}</h4>
+                    <p class="text-sm muted" style="margin:0;">${escapeHtml(resource.description)}</p>
+                `;
+                els.resourceList.appendChild(resourceEl);
+            });
+        } else {
+            els.resourceList.innerHTML = `<p class="muted text-center">Could not find resources at this time. Please try again.</p>`;
+        }
+    });
+
+    /* -------------------------
+       Gravity Orbital Simulator
+    ------------------------- */
+    function initGravitySimulator() {
+        const canvas = els.gravityCanvas; if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const PLANET_DATA = {
+            'Earth': { name: 'Earth', mass: 1000, r: 30, color1: '#a7d7f9', color2: '#0b5a8e'},
+            'Moon': { name: 'The Moon', mass: 120, r: 15, color1: '#e2e8f0', color2: '#94a3b8'},
+            'Mars': { name: 'Mars', mass: 600, r: 20, color1: '#f97316', color2: '#9a3412'},
+            'Jupiter': { name: 'Jupiter', mass: 4000, r: 50, color1: '#fcd34d', color2: '#b45309'},
+            'High-G Planet': { name: 'High-G Planet', mass: 8000, r: 40, color1: '#c084fc', color2: '#6b21a8'}
+        };
+
+        let raf, running = false, planet, craft, path = [], status = "Ready", backgroundStars = [];
+        const stableOrbitMin = 100, stableOrbitMax = 150;
+        let stableTime = 0;
+
+        function resize() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.clientWidth * dpr; canvas.height = canvas.clientHeight * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            
+            backgroundStars = [];
+            for(let i=0; i<100; i++) {
+                backgroundStars.push({ x: Math.random() * canvas.clientWidth, y: Math.random() * canvas.clientHeight, r: Math.random() * 1.5 });
+            }
+            reset();
+        }
+
+        function reset() {
+            if(raf) cancelAnimationFrame(raf);
+            running = false; status = "Ready"; stableTime = 0;
+
+            const selectedPlanet = PLANET_DATA[els.simPlanet.value];
+            planet = { x: canvas.clientWidth / 2, y: canvas.clientHeight / 2, ...selectedPlanet };
+            
+            const angleRad = (els.simAngle.value * Math.PI / 180);
+            craft = {
+                x: canvas.clientWidth / 2 + Math.cos(angleRad) * 180, 
+                y: canvas.clientHeight / 2 + Math.sin(angleRad) * 180,
+                vx: -Math.sin(angleRad) * els.simSpeed.value,
+                vy: Math.cos(angleRad) * els.simSpeed.value,
+                r: 8
+            };
+            path = [{x: craft.x, y: craft.y}];
+            updateStatusDisplay();
+            draw();
+        }
+
+        function launch() {
+            reset();
+            running = true;
+            status = "In Flight";
+            loop();
+        }
+
+        function update() {
+            const dx = planet.x - craft.x, dy = planet.y - craft.y;
+            const distSq = dx * dx + dy * dy;
+            const dist = Math.sqrt(distSq);
+            
+            if (dist < planet.r + craft.r) { status = "Crashed!"; running = false; }
+            else if (craft.x < -50 || craft.x > canvas.clientWidth + 50 || craft.y < -50 || craft.y > canvas.clientHeight + 50) { status = "Escaped Gravity!"; running = false; }
+            
+            const force = planet.mass / distSq;
+            const ax = (dx / dist) * force;
+            const ay = (dy / dist) * force;
+
+            craft.vx += ax; craft.vy += ay;
+            craft.x += craft.vx; craft.y += craft.vy;
+            path.push({x: craft.x, y: craft.y});
+            if(path.length > 500) path.shift();
+
+            if (dist > stableOrbitMin && dist < stableOrbitMax) {
+                stableTime++;
+                status = "Orbiting...";
+                if (stableTime > 300) { status = "Stable Orbit Achieved!"; running = false; playBeep({freq:1200}); }
+            } else {
+                stableTime = 0;
+                if (running) status = "Unstable";
+            }
+            updateStatusDisplay(dist);
+        }
+        
+        function updateStatusDisplay(dist) {
+            const currentSpeed = Math.sqrt(craft.vx**2 + craft.vy**2);
+            const altitude = dist ? (dist - planet.r) * 100 : 0; // Simple multiplier for display
+            els.simStatusText.textContent = `Status: ${status}`;
+            els.simGravityText.textContent = `Gravity: ${planet.mass}`;
+            els.simVelocityText.textContent = `Velocity: ${currentSpeed.toFixed(1)} km/s`;
+            els.simAltitudeText.textContent = `Altitude: ${Math.round(altitude)} km`;
+        }
+
+        function draw() {
+            ctx.clearRect(0,0,canvas.clientWidth, canvas.clientHeight);
+            
+            // Background stars
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            backgroundStars.forEach(s => {
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2); ctx.fill();
+            });
+
+            // Stable Orbit Zone
+            ctx.strokeStyle = 'rgba(0, 255, 0, 0.2)'; ctx.lineWidth = (stableOrbitMax - stableOrbitMin);
+            ctx.beginPath(); ctx.arc(planet.x, planet.y, (stableOrbitMin + stableOrbitMax) / 2, 0, Math.PI*2); ctx.stroke();
+            
+            // Planet
+            const planetGradient = ctx.createRadialGradient(planet.x - planet.r/2, planet.y - planet.r/2, planet.r/5, planet.x, planet.y, planet.r);
+            planetGradient.addColorStop(0, planet.color1);
+            planetGradient.addColorStop(1, planet.color2);
+            ctx.fillStyle = planetGradient; ctx.beginPath(); ctx.arc(planet.x, planet.y, planet.r, 0, Math.PI*2); ctx.fill();
+
+            // Path
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)'; ctx.lineWidth=1; ctx.beginPath();
+            path.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+            ctx.stroke();
+            
+            // Craft
+            ctx.save();
+            ctx.translate(craft.x, craft.y);
+            ctx.rotate(Math.atan2(craft.vy, craft.vx) + Math.PI / 2);
+            ctx.fillStyle = '#e5e7eb';
+            ctx.beginPath(); ctx.moveTo(0, -craft.r); ctx.lineTo(-craft.r/2, craft.r/2); ctx.lineTo(craft.r/2, craft.r/2); ctx.closePath(); ctx.fill();
+            ctx.restore();
+        }
+        
+        function loop() {
+            if(!running) { draw(); return; }
+            update(); draw();
+            raf = requestAnimationFrame(loop);
+        }
+
+        els.simPlanet.addEventListener('change', reset);
+        els.simSpeed.addEventListener('input', () => els.simSpeedValue.textContent = parseFloat(els.simSpeed.value).toFixed(1));
+        els.simAngle.addEventListener('input', () => els.simAngleValue.textContent = els.simAngle.value);
+        els.launchSimBtn.addEventListener('click', launch);
+        els.resetSimBtn.addEventListener('click', reset);
+        
+        window.addEventListener('resize', resize, {passive: true});
+        resize();
+    }
+    
+    /* -------------------------
+       SpectroScan Challenge
+    ------------------------- */
+    function initSpectroScanChallenge() {
+        const canvas = els.spectroCanvas; if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const SPECTRA = [
+            { element: 'Hydrogen', lines: [0.1, 0.3, 0.45, 0.8] },
+            { element: 'Helium', lines: [0.2, 0.35, 0.5, 0.7, 0.9] },
+            { element: 'Sodium', lines: [0.58, 0.59] },
+        ];
+        let currentSpectrum, score=0;
+
+        function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+
+        function next() {
+            hide(els.spectroFeedback);
+            currentSpectrum = SPECTRA[Math.floor(Math.random() * SPECTRA.length)];
+            draw();
+            
+            const options = [currentSpectrum.element];
+            while (options.length < 3) {
+                const randomName = SPECTRA[Math.floor(Math.random() * SPECTRA.length)].element;
+                if(!options.includes(randomName)) options.push(randomName);
+            }
+            
+            els.spectroElements.innerHTML = '';
+            shuffle(options).forEach(name => {
+                const el = document.createElement('div');
+                el.className = 'draggable-element';
+                el.textContent = name;
+                el.draggable = true;
+                el.addEventListener('dragstart', e => e.dataTransfer.setData('text/plain', name));
+                els.spectroElements.appendChild(el);
+            });
+            updateScore();
+        }
+
+        function draw() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.clientWidth * dpr; canvas.height = canvas.clientHeight * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            const w = canvas.clientWidth, h = canvas.clientHeight;
+            const gradient = ctx.createLinearGradient(0,0,w,0);
+            gradient.addColorStop(0, "violet"); gradient.addColorStop(0.2, "blue");
+            gradient.addColorStop(0.4, "green"); gradient.addColorStop(0.6, "yellow");
+            gradient.addColorStop(0.8, "orange"); gradient.addColorStop(1, "red");
+            ctx.fillStyle = gradient; ctx.fillRect(0,0,w,h);
+
+            ctx.fillStyle = '#000';
+            currentSpectrum.lines.forEach(linePos => {
+                ctx.fillRect(linePos * w - 1, 0, 2, h);
+            });
+        }
+        
+        function checkAnswer(elementName) {
+            if (elementName === currentSpectrum.element) {
+                score += 10;
+                els.spectroFeedback.textContent = "Correct! +10 Points";
+                playBeep({freq: 1200});
+                setTimeout(next, 1500);
+            } else {
+                els.spectroFeedback.textContent = "Incorrect!";
+                playBeep({freq: 400, length: 0.2});
+            }
+            show(els.spectroFeedback);
+            updateScore();
+        }
+        
+        function updateScore() { els.spectroScore.textContent = score; }
+
+        canvas.addEventListener('dragover', e => e.preventDefault());
+        canvas.addEventListener('drop', e => {
+            e.preventDefault();
+            const elementName = e.dataTransfer.getData('text/plain');
+            checkAnswer(elementName);
+        });
+        
+        els.nextSpectroBtn.addEventListener('click', next);
+        window.addEventListener('resize', draw, {passive: true});
+        next();
+    }
+
+
+    /* -------------------------
+        Planet Identifier Quiz
+    ------------------------- */
+    function PlanetIdentifierQuiz() {
+        const QUIZ_DATA = [
+            { name: "Mercury", clue: "I am the smallest planet and closest to the Sun." },
+            { name: "Venus", clue: "I am the hottest planet, with a thick, toxic atmosphere." },
+            { name: "Earth", clue: "I am the only planet known to support life." },
+            { name: "Mars", clue: "I am known as the 'Red Planet' due to iron oxide on my surface." },
+            { name: "Jupiter", clue: "I am the largest planet and have a Great Red Spot." },
+            { name: "Saturn", clue: "I am famous for my prominent, beautiful ring system." },
+            { name: "Uranus", clue: "I rotate on my side, making my seasons extreme." },
+            { name: "Neptune", clue: "I am the windiest planet and furthest from the Sun." },
+        ];
+
+        let score = 0, currentQuestionIndex = 0;
+        let questions = [];
+
+        function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+
+        function start() {
+            score = 0; currentQuestionIndex = 0;
+            questions = shuffle([...QUIZ_DATA]);
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            hide(els.planetQuizMessageEl);
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            els.planetQuizClueEl.textContent = question.clue;
+            
+            const options = [question.name];
+            while (options.length < 4) {
+                const randomPlanet = QUIZ_DATA[Math.floor(Math.random() * QUIZ_DATA.length)].name;
+                if (!options.includes(randomPlanet)) options.push(randomPlanet);
+            }
+            
+            els.planetQuizOptionsEl.innerHTML = '';
+            shuffle(options).forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'accent-button';
+                button.onclick = () => checkAnswer(option);
+                els.planetQuizOptionsEl.appendChild(button);
+            });
+            updateUI();
+        }
+
+        function checkAnswer(selectedOption) {
+            const correct = selectedOption === questions[currentQuestionIndex].name;
+            if (correct) {
+                score += 10;
+                els.planetQuizMessageEl.textContent = "Correct!";
+                playBeep({ freq: 1200 });
+            } else {
+                els.planetQuizMessageEl.textContent = "Incorrect!";
+                 playBeep({ freq: 400, length: 0.2 });
+            }
+            show(els.planetQuizMessageEl);
+            
+            currentQuestionIndex++;
+            setTimeout(nextQuestion, 1500);
+        }
+        
+        function endGame() {
+            els.planetQuizClueEl.textContent = `Quiz Complete! Your final score is ${score}.`;
+            els.planetQuizOptionsEl.innerHTML = '';
+            currentQuestionIndex = 0; // Reset for next game
+        }
+
+        function updateUI() {
+            els.planetQuizScoreEl.textContent = `Score: ${score}`;
+            els.planetQuizProgressEl.textContent = `Q: ${Math.min(currentQuestionIndex + 1, questions.length)}/${questions.length}`;
+        }
+
+        return { start, getScore: () => score };
+    }
+
+
+    /* -------------------------
+        Stargazing Game
+    ------------------------- */
+    function StargazingGame() {
+        const canvas = els.stargazingCanvas, ctx = canvas.getContext('2d');
+        const CONSTELLATIONS = [
+            { name: 'Orion', stars: [{x:0.2,y:0.2},{x:0.3,y:0.3},{x:0.4,y:0.25},{x:0.5,y:0.3},{x:0.6,y:0.2},{x:0.5,y:0.5},{x:0.4,y:0.55}], lines: [[0,1],[1,2],[2,3],[3,4],[1,5],[3,6],[5,6]]},
+            { name: 'Ursa Major', stars: [{x:0.2,y:0.6},{x:0.3,y:0.5},{x:0.45,y:0.55},{x:0.6,y:0.5},{x:0.7,y:0.4},{x:0.8,y:0.2},{x:0.55,y:0.25}], lines: [[0,1],[1,2],[2,3],[3,4],[4,5],[4,6]] },
+            { name: 'Cassiopeia', stars: [{x:0.2,y:0.5},{x:0.4,y:0.3},{x:0.5,y:0.5},{x:0.7,y:0.3},{x:0.8,y:0.5}], lines: [[0,1],[1,2],[2,3],[3,4]] },
+            { name: 'Scorpius', stars: [{x:0.2,y:0.3},{x:0.3,y:0.2},{x:0.4,y:0.25},{x:0.5,y:0.4},{x:0.55,y:0.6},{x:0.5,y:0.8},{x:0.4,y:0.7}], lines: [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6]] },
+            { name: 'Leo', stars: [{x:0.7,y:0.3},{x:0.6,y:0.2},{x:0.5,y:0.3},{x:0.45,y:0.45},{x:0.55,y:0.55},{x:0.75,y:0.6},{x:0.3,y:0.6}], lines: [[0,1],[1,2],[2,3],[3,4],[4,5],[4,6]] },
+            { name: 'Cygnus', stars: [{x:0.5,y:0.2},{x:0.5,y:0.4},{x:0.5,y:0.7},{x:0.35,y:0.4},{x:0.65,y:0.4}, {x:0.5, y:0.8}], lines: [[0,2],[3,4],[2,5]] },
+            { name: 'Canis Major', stars: [{x:0.4,y:0.2},{x:0.5,y:0.4},{x:0.4,y:0.6},{x:0.3,y:0.7},{x:0.6,y:0.5},{x:0.7,y:0.7}], lines: [[0,1],[1,2],[2,3],[1,4],[4,5]] },
+            { name: 'Aquila', stars: [{x:0.5,y:0.2},{x:0.45,y:0.4},{x:0.55,y:0.4},{x:0.5,y:0.6},{x:0.4,y:0.7},{x:0.6,y:0.7}], lines: [[0,1],[0,2],[1,3],[2,3],[3,4],[3,5]] }
+        ];
+        let currentConstellation, score = 0, backgroundStars = [];
+
+        function shuffle(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [array[i], array[j]] = [array[j], array[i]]; } return array; }
+
+        function start() {
+            score = 0;
+            nextConstellation();
+        }
+
+        function nextConstellation() {
+            hide(els.stargazingMessageEl);
+            currentConstellation = CONSTELLATIONS[Math.floor(Math.random() * CONSTELLATIONS.length)];
+            
+            // Generate options
+            const options = [currentConstellation.name];
+            while (options.length < 3) {
+                const randomName = CONSTELLATIONS[Math.floor(Math.random() * CONSTELLATIONS.length)].name;
+                if(!options.includes(randomName)) options.push(randomName);
+            }
+            
+            els.stargazingControlsEl.innerHTML = '';
+            shuffle(options).forEach(name => {
+                const btn = document.createElement('button');
+                btn.textContent = name;
+                btn.className = 'accent-button';
+                btn.onclick = () => checkAnswer(name);
+                els.stargazingControlsEl.appendChild(btn);
+            });
+            
+            // Generate background stars
+            backgroundStars = [];
+            for(let i=0; i<100; i++) {
+                backgroundStars.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.5 });
+            }
+
+            draw();
+            updateUI();
+        }
+
+        function draw() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.clientWidth * dpr;
+            canvas.height = canvas.clientHeight * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+            // Background stars
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            backgroundStars.forEach(s => {
+                ctx.beginPath(); ctx.arc(s.x * canvas.clientWidth, s.y * canvas.clientHeight, s.r, 0, Math.PI*2); ctx.fill();
+            });
+
+            const { stars, lines } = currentConstellation;
+            const padding = 40;
+            const w = canvas.clientWidth - padding*2;
+            const h = canvas.clientHeight - padding*2;
+            
+            // Lines
+            ctx.strokeStyle = 'rgba(142, 240, 255, 0.5)'; ctx.lineWidth = 1;
+            lines.forEach(([start, end]) => {
+                ctx.beginPath();
+                ctx.moveTo(padding + stars[start].x * w, padding + stars[start].y * h);
+                ctx.lineTo(padding + stars[end].x * w, padding + stars[end].y * h);
+                ctx.stroke();
+            });
+
+            // Stars
+            ctx.fillStyle = '#fff';
+            stars.forEach(s => {
+                ctx.beginPath(); ctx.arc(padding + s.x * w, padding + s.y * h, 3, 0, Math.PI*2); ctx.fill();
+            });
+        }
+        
+        function checkAnswer(name) {
+            if (name === currentConstellation.name) {
+                score += 25;
+                els.stargazingMessageEl.textContent = "Correct!";
+                playBeep({ freq: 1200 });
+                setTimeout(nextConstellation, 1500);
+            } else {
+                els.stargazingMessageEl.textContent = "Try Again!";
+                 playBeep({ freq: 400, length: 0.2 });
+            }
+            show(els.stargazingMessageEl);
+            setTimeout(() => hide(els.stargazingMessageEl), 1400);
+            updateUI();
+        }
+
+        function updateUI() {
+            els.stargazingScoreEl.textContent = `Score: ${score}`;
+        }
+        
+        window.addEventListener('resize', draw, {passive: true});
+
+        return { start, getScore: () => score };
+    }
+    
+    /* -------------------------
+        Scoreboard (localStorage)
+    ------------------------- */
+    function saveScore(key, entry) {
+        const storageKey = `novalink_scores_${key}`;
+        let list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        list.push(entry);
+        list.sort((a, b) => b.score - a.score);
+        localStorage.setItem(storageKey, JSON.stringify(list.slice(0, 5)));
+    }
+    function renderLeader(key, containerEl) {
+        if (!containerEl) return;
+        let list = JSON.parse(localStorage.getItem(`novalink_scores_${key}`) || '[]');
+        containerEl.innerHTML = list.length === 0 ? '<li>No scores yet</li>' : list.map(s => `<li>${escapeHtml(s.name)} — ${s.score}</li>`).join('');
+    }
+
+    /* -------------------------
+        Starfield background
+    ------------------------- */
+    (function enhanceStarfield() {
+        const canvas = $('#starfield-canvas'); if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let pointer = { x: innerWidth/2, y: innerHeight/2 };
+        function resize() { canvas.width=innerWidth; canvas.height=innerHeight; }
+        window.addEventListener('resize', resize, {passive: true});
+        window.addEventListener('pointermove', e => { pointer.x=e.clientX; pointer.y=e.clientY; }, {passive: true});
+        const field=Array.from({length:Math.round((innerWidth*innerHeight)/15000)},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,z:0.5+Math.random()*1.5,r:Math.random()*1.6}));
+        function frame(){
+            ctx.clearRect(0,0,canvas.width,canvas.height); const cx=pointer.x-innerWidth/2; const cy=pointer.y-innerHeight/2;
+            ctx.fillStyle='rgba(255,255,255,0.8)';
+            field.forEach(s=>{ const px=s.x+cx*(s.z*0.02); const py=s.y+cy*(s.z*0.02); ctx.beginPath(); ctx.arc(px,py,s.r,0,Math.PI*2); ctx.fill(); });
+            requestAnimationFrame(frame);
+        }
+        resize(); frame();
+    })();
+
+    /* -------------------------
+        Init everything on load
+    ------------------------- */
+    window.addEventListener('load', () => {
+        els.mobileMenuBtn?.addEventListener('click', () => {
+            const isExpanded = els.mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+            els.mobileMenuBtn.setAttribute('aria-expanded', !isExpanded); els.mobileMenu.classList.toggle('hidden');
+        });
+        $$('#mobile-menu a').forEach(link => link.addEventListener('click', () => { els.mobileMenuBtn.setAttribute('aria-expanded', 'false'); hide(els.mobileMenu); }));
+        els.modalCloseBtn?.addEventListener('click', () => hide(els.modal));
+        els.mentorBtn?.addEventListener('click', () => { els.chatBox.classList.toggle('hidden'); if(!els.chatBox.classList.contains('hidden')) els.chatInput.focus(); });
+        
+        els.chatInput?.addEventListener('keydown', async (e) => {
+          if(e.key === 'Enter' && els.chatInput.value.trim()){
+            const userMessage = els.chatInput.value.trim();
+            els.chatMessages.innerHTML += `<div class="font-medium mb-1" style="color: var(--accent-2);">You: ${escapeHtml(userMessage)}</div>`;
+            els.chatInput.value = '';
+            els.chatInput.disabled = true;
+
+            const thinking = document.createElement('div');
+            thinking.className = 'muted italic';
+            thinking.textContent = 'AI Mentor: Thinking...';
+            els.chatMessages.appendChild(thinking);
+            els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
+
+            const res = await callGemini({
+                systemPrompt: "You are a helpful and concise AI Mentor for a space career platform. Answer questions to the point, in a friendly tone. Use markdown for formatting like bullet points.",
+                userQuery: userMessage
+            });
+
+            thinking.remove();
+            let aiResponse = '';
+            if (res.success) {
+                aiResponse = res.data;
+            } else {
+                aiResponse = `Sorry, I encountered an error: ${res.message || 'Please try again.'}`;
+            }
+            els.chatMessages.innerHTML += `<div class="muted">${aiResponse.replace(/\n/g, '<br>')}</div>`;
+            els.chatMessages.scrollTop = els.chatMessages.scrollHeight;
+            els.chatInput.disabled = false;
+            els.chatInput.focus();
+          }
+        });
+
+        els.signupBtn?.addEventListener('click', async () => {
+            const name=(els.nameInput?.value||'').trim(), email=(els.emailInput?.value||'').trim();
+            if(!name||!email.includes('@')) return showModal('Please enter a valid name and email.');
+            els.signupBtn.disabled=true; els.signupBtn.textContent='Enrolling...';
+            await new Promise(r=>setTimeout(r,900));
+            els.signupBtn.textContent='Enroll in Launchpad'; els.signupBtn.disabled=false;
+            showModal('Enrollment confirmed! Welcome to NovaLink.');
+        });
+        
+        els.saveApiKeyBtn?.addEventListener('click', () => {
+            const key = els.apiKeyInput?.value.trim();
+            if (key) {
+                localStorage.setItem('geminiApiKey', key);
+                showModal('API Key saved successfully!');
+            } else {
+                showModal('Please enter a valid API Key.');
+            }
+        });
+        const savedKey = localStorage.getItem('geminiApiKey');
+        if (savedKey) {
+            els.apiKeyInput.value = savedKey;
+        }
+
+
+        // Init Tutorials
+        initGravitySimulator();
+        initSpectroScanChallenge();
+
+        // Init Games
+        const planetQuiz = PlanetIdentifierQuiz();
+        els.startPlanetQuizBtn?.addEventListener('click', () => planetQuiz.start());
+        els.savePlanetQuizScore?.addEventListener('click', () => {
+            const name = (els.playerNamePlanetQuiz?.value || '').trim() || 'Player';
+            const score = planetQuiz.getScore();
+            if (score <= 0) return showModal("You must complete a quiz with a score > 0 to save!");
+            saveScore('planetquiz', { name, score });
+            renderLeader('planetquiz', els.planetQuizLeader);
+            showModal(`Score saved for ${name}!`);
+        });
+
+        const stargazingGame = StargazingGame();
+        stargazingGame.start();
+        els.saveStargazingScore?.addEventListener('click', () => {
+            const score = stargazingGame.getScore();
+            if(score <= 0) return showModal("You must get at least one correct answer to save a score!");
+            const name = (els.playerNameStargazing?.value || '').trim() || 'Player';
+            saveScore('stargazing', {name, score});
+            renderLeader('stargazing', els.stargazingLeader);
+            showModal(`Score saved for ${name}!`);
+        });
+        
+        // Fullscreen Logic
+        els.fullscreenPlanetQuizBtn?.addEventListener('click', () => {
+            els.planetQuizStage.requestFullscreen();
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            // Future logic for fullscreen changes if needed
+        });
+        
+        $$('.video-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                e.preventDefault();
+                showModal(`This is a prototype. The full version would open a video player for "${card.dataset.videoTitle}".`);
+            });
+        });
+
+        renderLeader('planetquiz', els.planetQuizLeader);
+        renderLeader('stargazing', els.stargazingLeader);
+
+        document.body.style.opacity = '0';
+        setTimeout(() => { document.body.style.transition = 'opacity .45s ease'; document.body.style.opacity = '1'; }, 80);
+    });
+
+  })();
+  </script>
+</body>
+</html>
+
